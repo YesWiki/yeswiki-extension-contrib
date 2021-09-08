@@ -1,0 +1,8 @@
+{
+    "name": "yeswiki/extension-contrib",
+    "description": "Actions et templates proposées et maintenues par la communauté YesWiki.",
+    "type": "library",
+    "license": "AGPL-3.0-or-later",
+    "minimum-stability": "beta",
+    "require": {}
+}

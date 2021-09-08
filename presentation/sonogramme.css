@@ -1,0 +1,7 @@
+:root {
+  --waveform-height: 300px;
+}
+
+.yw-sonogramme.peaks-container .overview-container {
+  height: var(--waveform-height);
+}

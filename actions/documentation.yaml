@@ -1,0 +1,22 @@
+label: Contribution
+onlyForAdmins: false
+actions:
+  sonogramme:
+    label: Sonogramme
+    hint: Visualiser un contenu audio
+    properties:
+      file:
+        label: Nom du fichier MP3 à visualiser
+        hint: Comme avec `{{attach}}`. S'il n'existe pas, un téléversement vous sera proposé.
+        type: text
+        #type: file
+      height:
+        label: Hauteur de la visualisation
+        hint: En nombre de pixels
+        default: 200
+        type: number
+      color:
+        label: Couleur
+        hint: 'Exemple : rebeccapurple, #333, rgba(20, 40, 60, 0.5)'
+        type: text
+        #type: color

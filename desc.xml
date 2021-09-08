@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin name="yeswiki-contrib" version="1.0" active="1">
+  <author>Some good guys</author>
+  <label>Contrib</label>
+  <desc>Actions et templates à partager.</desc>
+</plugin>
