@@ -4,5 +4,7 @@
     "type": "library",
     "license": "AGPL-3.0-or-later",
     "minimum-stability": "beta",
-    "require": {}
+    "require": {
+        "league/glide": "^3.0@beta"
+    }
 }

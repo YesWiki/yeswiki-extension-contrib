@@ -1,4 +1,10 @@
+parameters:
+  cryptkey_for_images: 'ladkecOLF7RvMl/J5EGr/SMz5InfSyX+DA9CvecE/OiVFndnMqgvfLofNGO6/Gc5P1Io+eHYhcJphIRHCB9Kpg==' # this MUST be changed in the wakka.config.php
+
 services:
   _defaults:
     autowire: true
     public: true
+
+  YesWiki\Contrib\Controller\:
+    resource: 'controllers/*'

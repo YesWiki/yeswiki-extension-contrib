@@ -1,0 +1,66 @@
+{% extends "@bazar/entries/index-dynamic.twig" %}
+{% block assets %}
+  {{ include_css('tools/contrib/node_modules/photoswipe/dist/photoswipe.css') }}
+  {{ include_css('tools/contrib/node_modules/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css') }}
+  {{ include_javascript('tools/contrib/javascripts/photoswipe.component.js', false, true) }}
+  <style>
+.photoswipe-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5em;
+}
+
+.photoswipe-gallery > * { transition: opacity 50ms linear 100ms, transform 150ms ease-in-out 10ms; }
+.photoswipe-gallery > *:hover { transform: translateY(-3px); }
+
+.photoswipe-gallery > a {
+  height: 30vh;
+  flex-grow: 1;
+}
+
+.photoswipe-gallery .spacer {
+  flex-grow: 10;
+}
+
+.photoswipe-gallery > a > img {
+  height: 100%;
+  min-width: 100%;
+  object-fit: cover;
+  vertical-align: bottom;
+  border-radius:0;
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .photoswipe-gallery > a {
+    height: 25vh;
+  }
+}
+
+@media (max-height: 480px) {
+  .photoswipe-gallery > a {
+    height: 80vh;
+  }
+}
+
+@media (max-aspect-ratio: 1/1) and (max-width: 480px) {
+  .photoswipe-gallery {
+    flex-direction: row;
+  }
+
+  .photoswipe-gallery > a {
+    height: auto;
+    width: 100%;
+  }
+  .photoswipe-gallery > a > img {
+    width: 100%;
+    max-height: 75vh;
+    min-width: 0;
+  }
+}
+  </style>
+{% endblock %}
+
+{% block display_entries %}
+<Bazar-Gallery>
+</Bazar-Gallery> <!-- / .photoswipe-gallery -->
+{% endblock %}
