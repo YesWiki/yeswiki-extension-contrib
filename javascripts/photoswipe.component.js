@@ -6,7 +6,7 @@ Vue.component('BazarGallery', {
     checkImageSize(event) {
       const h = event.originalTarget.naturalHeight
       const w = event.originalTarget.naturalWidth
-      if (h>w) {
+      if (h > w) {
         const newWidth = 1080 / h * w
         event.originalTarget.parentElement.dataset.pswpWidth = newWidth
       } else {
@@ -28,7 +28,7 @@ Vue.component('BazarGallery', {
     });
     lightbox.init();
   },
-  computed: { 
+  computed: {
     entries() {
       return this.$root.entriesToDisplay.filter((entry) => entry.visual)
     }
@@ -42,16 +42,20 @@ Vue.component('BazarGallery', {
      data-pswp-height="1080"
      data-cropped="true" 
      target="_blank"
+     :title="entry.bf_titre"
      :href="'?api/images/resize/' + entry.visual+'&w=1920&h=1080&fit=max'"
   >
       <img   
         loading="lazy"
-        alt=""
+        :alt="entry.bf_titre"
         @load="(event) => checkImageSize(event)"
         class="pswp-image" 
         :src="'?api/images/resize/'+entry.visual+'&w='+$root.params.imgWidth+'&h='+$root.params.imgHeight+'&fit=max'"
       />
-      <span class="pswp-caption-content">Caption content</span>
+      <span class="pswp-caption-content">
+        <h2 v-html="entry.bf_titre"></h2>
+        <span v-if="entry.subtitle" v-html="entry.subtitle"></span>
+      </span>
   </a>
   <div class="spacer"></div>
 </div>
