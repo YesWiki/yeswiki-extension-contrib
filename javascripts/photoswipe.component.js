@@ -1,5 +1,5 @@
-import PhotoSwipeLightbox from '../node_modules/photoswipe/dist/photoswipe-lightbox.esm.js';
-import PhotoSwipeDynamicCaption from '../node_modules/photoswipe-dynamic-caption-plugin/dist/photoswipe-dynamic-caption-plugin.esm.min.js';
+import PhotoSwipeLightbox from './vendor/photoswipe/photoswipe-lightbox.esm.min.js';
+import PhotoSwipeDynamicCaption from './vendor/photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js';
 
 Vue.component('BazarGallery', {
   methods: {
@@ -19,7 +19,7 @@ Vue.component('BazarGallery', {
     const lightbox = new PhotoSwipeLightbox({
       gallery: '.photoswipe-gallery',
       children: 'a',
-      pswpModule: () => import('../node_modules/photoswipe/dist/photoswipe.esm.js')
+      pswpModule: () => import('./vendor/photoswipe/photoswipe.esm.min.js')
     });
     const captionPlugin = new PhotoSwipeDynamicCaption(lightbox, {
       // Plugins options, for example:
