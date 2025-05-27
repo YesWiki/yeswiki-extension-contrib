@@ -38,7 +38,6 @@ class LimitEntriesAction extends YesWikiAction
         $entryManager = $this->getService(EntryManager::class);
         $nbEntries = count($entryManager->search(['formsIds' => [$this->arguments['id']]]));
 
-        dump($nbEntries, $this->arguments['limit']);
         if ($nbEntries >= $this->arguments['limit']) {
             return '<div class="alert alert-warning">' . _t($msgMax, ['limit' => $this->arguments['limit']]) . '</div>';
         } else {
