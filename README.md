@@ -23,4 +23,5 @@ Exemple complet
 
 # Templates
 
-_Bientôt_…
+ - compteur_simple.tpl.html : indique uniquement le nombre de fiches trouvées
+ - photoswipe.twig : galerie photo moderne
