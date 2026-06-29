@@ -14,8 +14,8 @@
   async function saveEntryField(entryId, fieldName, newValue) {
     const entry = await loadEntry(entryId)
     entry[fieldName] = newValue
-    const res = await fetch(`${BASE_URL}?${entryId}`, {
-      method: 'PUT',
+    const res = await fetch(`${BASE_URL}api/entries/${entry.id_typeannonce}`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(entry)
     })
