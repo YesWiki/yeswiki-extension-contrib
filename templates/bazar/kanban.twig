@@ -5,6 +5,7 @@
 
    Parameters:
    - kanbanfield          : (required) field property name used to group entries into columns
+   - datefield            : (optional) field property name used as the date
    - kanbanaddpage        : (optional) WikiPage name where the form for kanban is used
    - kanbanPersonField    : (optional) field for associated persons for the kanban
    - nbcol                : (optional) number of kanban columns in one line
@@ -15,6 +16,7 @@
 {% set kanbanField = params.kanbanfield ?? '' %}
 {% set kanbanAddPage = params.kanbanaddpage ?? 'AjoutTodo' %}
 {% set kanbanPersonField = params.kanbanpersonfield ?? 'bf_personne' %}
+{% set DateField = params.datefield ?? 'bf_date_debut_evenement' %}
 {% set kanbanNbCol = int(params.nbcol|default(4)) %}
 {% set kanbanOrder = params.kanbanorder|default('desc') %}
 {% if kanbanField is empty %}
@@ -64,7 +66,7 @@
         {% for idx, colVal in allColumns %}
             {% set trimmedColVal = colVal|trim %}
             {# Filter entries for this column #}
-            {% set colEntries = fiches|filter(f => attribute(f, kanbanField)|default('')|trim == trimmedColVal)|sort(e => e.bf_date_debut_evenement|default('')) %}
+            {% set colEntries = fiches|filter(f => attribute(f, kanbanField)|default('')|trim == trimmedColVal)|sort(e => attribute(e, DateField)|default('')) %}
             {% if kanbanOrder == 'asc' %}
                 {% set colEntries = colEntries|reverse %}
             {% endif %}
@@ -86,9 +88,10 @@
                     {% else %}
                         {% for fiche in colEntries %}
                             {% set canEdit = hasAcl('write', fiche.id_fiche) %}
-                            {% set isOverdue = fiche.bf_date_debut_evenement is not empty and fiche.bf_date_debut_evenement < "now"|date("Y-m-d") %}
+                            {% set ficheDate = attribute(fiche, DateField)|default('') %}
+                            {% set isOverdue = ficheDate is not empty and ficheDate < "now"|date("Y-m-d") %}
                             {% if isOverdue %}
-                                {% set daysOverdue = (("now"|date("U") - fiche.bf_date_debut_evenement|date("U")) / 86400)|round(0, 'floor') %}
+                                {% set daysOverdue = (("now"|date("U") - ficheDate|date("U")) / 86400)|round(0, 'floor') %}
                             {% endif %}
                             <div class="kanban-card bazar-entry{% if isOverdue %} kanban-card--overdue{% endif %}"
                                  {{ fiche.html_data|raw }}
@@ -106,10 +109,10 @@
                                        data-size="modal-lg"
                                        title="{{ fiche.bf_titre|striptags }}">{{ fiche.bf_titre|striptags }}</a>
                                 </div>
-                                {% if fiche.bf_date_debut_evenement is not empty %}
+                                {% if ficheDate is not empty %}
                                     <div class="kanban-card-date{% if isOverdue %} kanban-card-date--overdue{% endif %}">
                                         <i class="fas fa-calendar-alt"></i>
-                                        {{ fiche.bf_date_debut_evenement|date("d/m/Y") }}
+                                        {{ ficheDate|date("d/m/Y") }}
                                         {% if isOverdue %}<span class="kanban-overdue-badge">+{{ daysOverdue }}j</span>{% endif %}
                                     </div>
                                 {% endif %}
