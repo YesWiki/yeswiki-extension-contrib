@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "npm run build",
-    "build": "./javascripts/vendor/extract-files-from-node-modules.sh"
+    "build": "./includes/extract-files-from-node-modules.sh"
   },
   "keywords": [],
   "author": "",
