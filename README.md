@@ -1,46 +1,48 @@
 # yeswiki-extension-contrib
 
-> Des bonnes idées d'actions et de templates à réutiliser dans vos projets. La
-> maintenance est effectuée par la communauté YesWiki.
+ - [English](#english)
+ - [Français](#français)
 
-# Actions
+## English
 
-## `{{ sonogramme }}`
+[YesWiki](https://yeswiki.net/) extension. Actions and templates contributed and maintained by the YesWiki community.
 
-Visualisation interactive réalisée à partir d'un fichier audio.
+### Authors
 
-![Exemple de sonogramme généré depuis un fichier audio](presentation/action-sonogramme.png)
+ - all contributors indicated on this page : <https://github.com/YesWiki/yeswiki-extension-contrib/graphs/contributors>
 
-## `{{ limitentries }}`
+### Install
 
-Limite la saisie de fiches a un certain nombre indiqué (attention: ne marche
-qu'a travers cette action, on peut toujours ajouter des fiches par l'admin de
-bazar, par exemple..).
+In page `GererMisesAJour` on your YesWiki website, search extension `contrib` and install it.
 
-Les parametres `id` et `limit` sont obligatoires, `message_max` et
-`message_count` optionnels
+### Usage
 
-Exemple complet
+Usage help is described in `http://example.com/?doc/#tools/contrib/en/README.md` (replacing `http://example.com/?` by the `baseUrl` of your wiki). The same file can be found also here : https://github.com/YesWiki/yeswiki-extension-contrib/blob/doryphore/docs/en/README.md
 
-```
-{{limitentries id="1" limit="30" message_max="Il n'y a plus de places disponible, la limite était %{limit}, désolé..." message_count="Réservation %{nb} sur %{limit}"}}
-```
+### Warranty
 
-# Templates
+Like written in the licence file, there is no warranty on usage of this software. Refer to licence file for details.
+Developpers of this extension can not be responsible of consequences of the usage of this extension.
 
-- compteur_simple.tpl.html : indique uniquement le nombre de fiches trouvées
-- photoswipe.twig : galerie photo moderne
-- kandan.twig : faire un tableau kandan drag n drop Usage:
-  {{bazarliste id="X" template="kanban.twig" kanbanfield="bf_statut"}}
+----
 
-  Parametres:
-  - kanbanfield : (required) field property name used to group entries into
-    columns
-  - kanbanaddpage : (optional) WikiPage name where the form for kanban is used
-  - kanbanPersonField : (optional) field for associated persons for the kanban
-  - nbcol : (optional) number of kanban columns in one line
-  - kanbancolumns : (optional) comma-separated list of column values in desired
-    order
-  - kanbancolumnslabels : (optional) comma-separated list of labels matching
-    kanbancolumns If omitted and groups=kanbanfield is set, labels come from the
-    filter nodes.
+## Français
+
+Extension [YesWiki](https://yeswiki.net/). Actions et templates proposés et maintenus par la communauté YesWiki.
+
+### Auteurs
+
+ - tous les contributeurs et toutes les contributrices indiqués sur cette page : <https://github.com/YesWiki/yeswiki-extension-contrib/graphs/contributors>
+
+### Installation
+
+Dans la page `GererMisesAJour` de votre YesWiki, recherchez l'extension `contrib` et installez-la.
+
+### Utilisation
+
+L'aide sur l'utilisation peut être trouvée sur `http://example.com/?doc/#tools/contrib/fr/README.md` (en remplaçant `http://example.com/?` par `baseUrl` de votre wiki). Le même fichier peut aussi être trouvé ici : https://github.com/YesWiki/yeswiki-extension-contrib/blob/doryphore/docs/fr/README.md
+
+### Garantie
+
+Comme énoncé dans le fichier de licence, il n'y a pas de garantie sur l'usage de ce logiciel. Se référer au fichier de licence pour les détails.
+Les développeurs de cette extension ne peuvent être responsables des conséquences qui découlent de l'usage de cette extension.
