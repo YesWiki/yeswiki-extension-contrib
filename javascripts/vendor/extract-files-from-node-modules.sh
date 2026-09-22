@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Extract files that we need from the node_modules folder
 # The extracted files are integrated to the repository, so production server don't need to
