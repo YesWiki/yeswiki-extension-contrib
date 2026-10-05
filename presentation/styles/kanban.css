@@ -9,7 +9,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background-color: #f0f2f5;
+  background-color: var(--yw-surface-sunken);
   border-radius: 8px;
   max-height: 80vh;
   overflow: hidden;
@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  background-color: #e2e5ea;
+  background-color: color-mix(in srgb, var(--yw-surface-sunken) 85%, var(--yw-text));
   border-radius: 8px 8px 0 0;
   font-weight: bold;
   font-size: 0.95rem;
@@ -34,8 +34,8 @@
 }
 
 .kanban-column-count {
-  background-color: #fff;
-  color: #555;
+  background-color: var(--yw-surface-raised);
+  color: var(--yw-text-muted);
   border-radius: 12px;
   padding: 0.1em 0.55em;
   font-size: 0.8rem;
@@ -56,7 +56,7 @@
 }
 
 .kanban-card {
-  background-color: #fff;
+  background-color: var(--yw-surface-raised);
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   padding: 0.75rem;
@@ -81,7 +81,7 @@
 
 .kanban-card-title a:hover {
   text-decoration: underline;
-  color: var(--primary-color, #337ab7);
+  color: var(--yw-primary);
 }
 
 .kanban-card-image {
@@ -98,17 +98,17 @@
 }
 
 .kanban-card--overdue {
-  border-left: 3px solid #d9534f;
-  background-color: #fff8f8;
+  border-left: 3px solid var(--yw-danger);
+  background-color: color-mix(in srgb, var(--yw-danger) 6%, var(--yw-surface-raised));
 }
 
 .kanban-card--overdue:hover {
-  box-shadow: 0 3px 8px rgba(217, 83, 79, 0.25);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--yw-danger) 25%, transparent);
 }
 
 .kanban-card-date {
   font-size: 0.78rem;
-  color: #777;
+  color: var(--yw-text-muted);
   margin-top: 0.35rem;
   display: flex;
   align-items: center;
@@ -116,14 +116,14 @@
 }
 
 .kanban-card-date--overdue {
-  color: #d9534f;
+  color: var(--yw-danger);
   font-weight: 600;
 }
 
 .kanban-overdue-badge {
   display: inline-block;
-  background-color: #d9534f;
-  color: #fff;
+  background-color: var(--yw-danger);
+  color: var(--yw-surface-raised);
   font-size: 0.68rem;
   font-weight: 700;
   padding: 0.05em 0.4em;
@@ -147,8 +147,8 @@
   border-radius: 50%;
   font-size: 0.6rem;
   font-weight: 700;
-  color: #fff;
-  background-color: #aaa;
+  color: var(--yw-surface-raised);
+  background-color: var(--yw-text-muted);
   flex-shrink: 0;
   cursor: default;
   user-select: none;
@@ -165,9 +165,9 @@
   display: block;
   padding: 0.5rem;
   text-align: center;
-  border-top: 1px solid #d0d4db;
+  border-top: var(--yw-border-width) solid var(--yw-border);
   background: transparent;
-  color: #999;
+  color: var(--yw-text-muted);
   font-size: 1.3rem;
   line-height: 1;
   text-decoration: none;
@@ -184,19 +184,18 @@
 }
 
 .kanban-add-btn:hover {
-  background-color: #d0d4db;
-  color: #333;
+  background-color: var(--yw-border);
+  color: var(--yw-text);
   text-decoration: none;
 }
 
 .kanban-empty-column {
   text-align: center;
-  color: #aaa;
+  color: var(--yw-text-muted);
   font-size: 0.85rem;
   padding: 1rem 0;
 }
 
-/* ---- Drag-and-drop states ---- */
 
 .kanban-card:not([data-no-drag]) {
   cursor: grab;
@@ -225,25 +224,24 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.55)
+  background: color-mix(in srgb, var(--yw-surface-raised) 55%, transparent)
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' stroke='%23aaa' stroke-width='3' fill='none' stroke-dasharray='32' stroke-dashoffset='10'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 12 12' to='360 12 12' dur='0.8s' repeatCount='indefinite'/%3E%3C/circle%3E%3C/svg%3E")
     center / 24px no-repeat;
   border-radius: 6px;
 }
 
 .kanban-card--error {
-  border: 2px solid #d9534f;
-  background-color: #fff5f5;
+  border: 2px solid var(--yw-danger);
+  background-color: color-mix(in srgb, var(--yw-danger) 8%, var(--yw-surface-raised));
 }
 
 .kanban-column-body.sortable-over {
-  background-color: #e8f0fe;
+  background-color: color-mix(in srgb, var(--yw-primary) 10%, var(--yw-surface-raised));
   border-radius: 0 0 8px 8px;
-  outline: 2px dashed #aac4f0;
+  outline: 2px dashed var(--yw-primary);
   outline-offset: -4px;
 }
 
-/* -------------------------------- */
 
 @media (max-width: 900px) {
   .kanban-board {

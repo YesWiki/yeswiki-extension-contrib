@@ -36,24 +36,25 @@ still add entries beyond it.
 
 | Template | Purpose |
 |---|---|
-| `compteur_simple.tpl.html` | shows only the number of entries found |
-| `photoswipe.twig` | photo gallery |
-| `kanban.twig` | drag and drop kanban board |
+| `compteur_simple` | shows only the number of entries found |
+| `photoswipe` | photo gallery |
+| `kanban` | drag and drop kanban board |
 
 ### Kanban parameters
 
 ```
-{{bazarliste id="X" template="kanban.twig" kanbanfield="bf_statut"}}
+{{entrylist id="X" template="kanban" kanbanfield="bf_statut"}}
 ```
 
 | Parameter | Required | Purpose |
 |---|---|---|
 | `kanbanfield` | yes | field used to group entries into columns |
 | `kanbanaddpage` | no | wiki page carrying the input form |
-| `kanbanPersonField` | no | field for the associated people |
-| `nbcol` | no | number of columns per row |
+| `kanbanpersonfield` | no | field for the associated people |
+| `columns` | no | number of columns per row |
 | `kanbancolumns` | no | comma-separated column values, in the wanted order |
 | `kanbancolumnslabels` | no | labels matching `kanbancolumns` |
 
-Without `kanbancolumnslabels`, and with `groups=kanbanfield` set, labels come from the
-filter nodes.
+Without `kanbancolumnslabels`, columns take the labels of the field's list.
+
+The `photoswipe` gallery is a dynamic template (`dynamic="true"`): its thumbnails go through YesWiki's image cache.

@@ -1,0 +1,124 @@
+{#
+   Kanban for entrylist: {{entrylist id="X" template="kanban" kanbanfield="bf_statut"}}
+   kanbanfield (required), datefield, kanbanaddpage, kanbanpersonfield, columns, kanbancolumns, kanbancolumnslabels, kanbanorder
+#}
+{{ include_css('extensions/contrib/presentation/styles/kanban.css') }}
+{% set kanbanField = params.kanbanfield ?? '' %}
+{% set kanbanAddPage = params.kanbanaddpage ?? 'AjoutTodo' %}
+{% set kanbanPersonField = params.kanbanpersonfield ?? 'bf_personne' %}
+{% set dateField = params.datefield ?? 'bf_date_debut_evenement' %}
+{% set kanbanNbCol = (params.columns ?? params.nbcol ?? 4)|number_format(0, '', '') %}
+{% set kanbanOrder = params.kanbanorder|default('desc') %}
+{% if kanbanField is empty %}
+    <div class="yw-alert yw-alert--warning">{{ _t('CONTRIB_KANBAN_NEEDS_FIELD') }}</div>
+{% elseif entries|length == 0 %}
+    {{ resultsInfo|raw }}
+{% else %}
+    {{ resultsInfo|raw }}
+    {% if params.kanbancolumns is not empty %}
+        {% set kanbanColumns = params.kanbancolumns|split(',') %}
+        {% set kanbanLabels = params.kanbancolumnslabels is not empty ? params.kanbancolumnslabels|split(',') : [] %}
+    {% elseif filters[kanbanField] is defined %}
+        {% set kanbanColumns = filters[kanbanField].nodes|map(n => n.value) %}
+        {% set kanbanLabels = filters[kanbanField].nodes|map(n => n.label) %}
+    {% else %}
+        {% set kanbanColumns = [] %}
+        {% for entry in entries %}
+            {% set val = attribute(entry, kanbanField)|default('') %}
+            {% if val not in kanbanColumns %}
+                {% set kanbanColumns = kanbanColumns|merge([val]) %}
+            {% endif %}
+        {% endfor %}
+        {% set kanbanLabels = [] %}
+    {% endif %}
+    {% set fieldOptions = {} %}
+    {% for form in forms|default([]) %}
+        {% for field in form.prepared|default([]) %}
+            {% if field.propertyName == kanbanField and field.options is defined and field.options is iterable %}
+                {% set fieldOptions = field.options %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    {% set allLabels = kanbanLabels %}
+    {% if params.kanbancolumns is not empty %}
+        {% set allColumns = kanbanColumns %}
+    {% else %}
+        {% set uncategorized = [] %}
+        {% for entry in entries %}
+            {% set val = attribute(entry, kanbanField)|default('') %}
+            {% if val not in kanbanColumns and val not in uncategorized %}
+                {% set uncategorized = uncategorized|merge([val]) %}
+            {% endif %}
+        {% endfor %}
+        {% set allColumns = kanbanColumns|merge(uncategorized) %}
+    {% endif %}
+    <div class="kanban-board" data-kanban-field="{{ kanbanField|e('html_attr') }}" style="--kanban-cols: {{ kanbanNbCol }}">
+        {% for idx, colVal in allColumns %}
+            {% set trimmedColVal = colVal|trim %}
+            {% set colEntries = entries|filter(e => attribute(e, kanbanField)|default('')|trim == trimmedColVal)|sort((a, b) => attribute(a, dateField)|default('') <=> attribute(b, dateField)|default('')) %}
+            {% if kanbanOrder == 'asc' %}
+                {% set colEntries = colEntries|reverse %}
+            {% endif %}
+            {% set colLabel = allLabels[idx] is defined ? allLabels[idx] : (fieldOptions[trimmedColVal] is defined ? fieldOptions[trimmedColVal] : (trimmedColVal is not empty ? trimmedColVal : _t('CONTRIB_KANBAN_UNSORTED'))) %}
+            <div class="kanban-column" data-column-value="{{ trimmedColVal|e('html_attr') }}">
+                <div class="kanban-column-header">
+                    <span class="kanban-column-title">{{ colLabel }}</span>
+                    <span class="kanban-column-count">{{ colEntries|length }}</span>
+                </div>
+                <div class="kanban-column-body">
+                    {% if colEntries|length == 0 %}
+                        <div class="kanban-empty-column">—</div>
+                    {% else %}
+                        {% for entry in colEntries %}
+                            {% set canEdit = hasAcl('write', entry.tag) %}
+                            {% set entryDate = attribute(entry, dateField)|default('') %}
+                            {% set isOverdue = entryDate is not empty and entryDate|slice(0, 10) < 'now'|date('Y-m-d') %}
+                            <div class="kanban-card bazar-entry{{ isOverdue ? ' kanban-card--overdue' : '' }}" {{ entry.html_data|raw }}{{ canEdit ? '' : ' data-no-drag="1"' }}>
+                                {% if entry.imagebf_image is not empty %}
+                                    <div class="kanban-card-image">
+                                        <img loading="lazy" src="{{ urlImage({fileName: 'files/' ~ entry.imagebf_image, width: 280, height: 120, mode: 'crop'}) }}" alt="">
+                                    </div>
+                                {% endif %}
+                                <div class="kanban-card-title">
+                                    <a href="{{ entry.url }}" class="modalbox" data-size="modal-lg" title="{{ entry.title|striptags }}">{{ entry.title|striptags }}</a>
+                                </div>
+                                {% if entryDate is not empty %}
+                                    <div class="kanban-card-date{{ isOverdue ? ' kanban-card-date--overdue' : '' }}">
+                                        {{ icon('calendar') }}
+                                        {{ entryDate|moment('L') }}
+                                        {% if isOverdue %}
+                                            <span class="kanban-overdue-badge">{{ _t('CONTRIB_KANBAN_DAYS_LATE', {days: (('now'|date('U') - entryDate|date('U')) / 86400)|round(0, 'floor')}) }}</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {% set personValue = attribute(entry, kanbanPersonField)|default('') %}
+                                {% if personValue is not empty %}
+                                    <div class="kanban-card-people">
+                                        {% for person in personValue|split(',') %}
+                                            {% set p = person|trim %}
+                                            {% if p is not empty %}
+                                                <span class="kanban-person-badge" data-person="{{ p|e('html_attr') }}" title="{{ p }}">{{ p|slice(0, 2)|upper }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if params.barregestion and canEdit %}
+                                    <div class="kanban-card-actions">
+                                        <a href="{{ url({tag: entry.tag, handler: 'editiframe'}) }}" class="yw-btn yw-btn--sm modalbox" data-size="modal-lg" data-iframe="1" title="{{ _t('MODIFY') }} {{ entry.title|striptags }}">{{ icon('pencil') }}</a>
+                                        <button type="button" class="yw-btn yw-btn--sm kanban-archive-btn" title="{{ _t('CONTRIB_KANBAN_ARCHIVE') }}">{{ icon('box') }}</button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if kanbanAddPage is not empty %}
+                    <a href="{{ url({tag: kanbanAddPage, handler: 'iframe', params: {(kanbanField): trimmedColVal}}) }}" class="kanban-add-btn modalbox" data-size="modal-lg" data-iframe="1" title="{{ _t('ADD') }}">+</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    {{ pager_links|raw }}
+    {{ include_javascript('javascripts/vendor/sortablejs/sortable.js') }}
+    {{ include_javascript('extensions/contrib/presentation/javascripts/kanban.js') }}
+{% endif %}

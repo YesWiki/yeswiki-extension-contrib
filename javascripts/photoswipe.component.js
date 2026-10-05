@@ -1,17 +1,25 @@
-import PhotoSwipeLightbox from './vendor/photoswipe/photoswipe-lightbox.esm.min.js';
-import PhotoSwipeDynamicCaption from './vendor/photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js';
+import PhotoSwipeLightbox from './vendor/photoswipe/photoswipe-lightbox.esm.min.js'
+import PhotoSwipeDynamicCaption from './vendor/photoswipe/photoswipe-dynamic-caption-plugin.esm.min.js'
 
-Vue.component('BazarGallery', {
+window._bazarDynamicComponents = window._bazarDynamicComponents || {}
+window._bazarDynamicComponents.BazarGallery = {
+  props: {
+    width: { type: Number, default: 600 },
+    height: { type: Number, default: 400 },
+    token: { type: String, default: '' }
+  },
   methods: {
+    original(entry) {
+      return `${wiki.baseUrl.replace(/\?$/, '').replace(/\/$/, '')}/files/${entry.visual}`
+    },
     checkImageSize(event) {
-      const h = event.originalTarget.naturalHeight
-      const w = event.originalTarget.naturalWidth
+      const image = event.target
+      const h = image.naturalHeight
+      const w = image.naturalWidth
       if (h > w) {
-        const newWidth = 1080 / h * w
-        event.originalTarget.parentElement.dataset.pswpWidth = newWidth
+        image.parentElement.dataset.pswpWidth = Math.round((1080 / h) * w)
       } else {
-        const newHeight = 1920 / w * h
-        event.originalTarget.parentElement.dataset.pswpHeight = newHeight
+        image.parentElement.dataset.pswpHeight = Math.round((1920 / w) * h)
       }
     }
   },
@@ -20,13 +28,9 @@ Vue.component('BazarGallery', {
       gallery: '.photoswipe-gallery',
       children: 'a',
       pswpModule: () => import('./vendor/photoswipe/photoswipe.esm.min.js')
-    });
-    const captionPlugin = new PhotoSwipeDynamicCaption(lightbox, {
-      // Plugins options, for example:
-      type: 'auto',
-      captionContent: '.pswp-caption-content'
-    });
-    lightbox.init();
+    })
+    new PhotoSwipeDynamicCaption(lightbox, { type: 'auto', captionContent: '.pswp-caption-content' })
+    lightbox.init()
   },
   computed: {
     entries() {
@@ -36,28 +40,26 @@ Vue.component('BazarGallery', {
   template: `
 <div class="photoswipe-gallery">
   <a v-for="entry in entries"
-     :key="entry.id_fiche"
+     :key="entry.tag"
      class="bazar-entry"
-     data-pswp-width="1920" 
+     data-pswp-width="1920"
      data-pswp-height="1080"
-     data-cropped="true" 
+     data-cropped="true"
      target="_blank"
-     :title="entry.bf_titre"
-     :href="'?api/images/resize/' + entry.visual+'&w=1920&h=1080&fit=max'"
-  >
-      <img   
-        loading="lazy"
-        :alt="entry.bf_titre"
-        @load="(event) => checkImageSize(event)"
-        class="pswp-image" 
-        :src="'?api/images/resize/'+entry.visual+'&w='+$root.params.imgWidth+'&h='+$root.params.imgHeight+'&fit=max'"
-      />
-      <span class="pswp-caption-content">
-        <h2 v-html="entry.bf_titre"></h2>
-        <span v-if="entry.subtitle" v-html="entry.subtitle"></span>
-      </span>
+     :title="entry.title"
+     :href="original(entry)">
+    <img loading="lazy"
+         :alt="entry.title"
+         class="pswp-image"
+         :src="$root.urlImage(entry, 'visual', width, height, 'fit')"
+         @error="$root.urlImageResizedOnError(entry, 'visual', width, height, 'fit', token, $event)"
+         @load="checkImageSize" />
+    <span class="pswp-caption-content">
+      <h2 v-html="entry.title"></h2>
+      <span v-if="entry.subtitle" v-html="entry.subtitle"></span>
+    </span>
   </a>
   <div class="spacer"></div>
 </div>
 `
-})
+}

@@ -1,7 +1,12 @@
-:root {
-  --waveform-height: 300px;
+.yw-sonogramme {
+  --waveform-height: 200px;
 }
 
-.yw-sonogramme.peaks-container .overview-container {
+.yw-sonogramme__overview {
   height: var(--waveform-height);
+}
+
+.yw-sonogramme__audio {
+  width: 100%;
+  margin-top: var(--yw-space-sm-y);
 }

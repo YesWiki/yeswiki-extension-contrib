@@ -14,7 +14,7 @@
   async function saveEntryField(entryId, fieldName, newValue) {
     const entry = await loadEntry(entryId)
     entry[fieldName] = newValue
-    const res = await fetch(`${BASE_URL}api/entries/${entry.id_typeannonce}`, {
+    const res = await fetch(`${BASE_URL}api/entries/${entry.form_id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify(entry)
@@ -64,7 +64,7 @@
       const card = btn.closest('.kanban-card')
       const body = card && card.closest('.kanban-column-body')
       const column = body && body.closest('.kanban-column')
-      const entryId = card && card.getAttribute('data-id_fiche')
+      const entryId = card && card.getAttribute('data-tag')
       if (!entryId) return
 
       card.classList.add('kanban-card--loading')
@@ -106,7 +106,7 @@
 
           const toColumn = toBody.closest('.kanban-column')
           const newValue = toColumn ? toColumn.dataset.columnValue : ''
-          const entryId = card.getAttribute('data-id_fiche')
+          const entryId = card.getAttribute('data-tag')
 
           if (!entryId) return
 

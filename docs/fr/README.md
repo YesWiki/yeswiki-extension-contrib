@@ -21,7 +21,7 @@ Limite le nombre de fiches qu'un formulaire accepte.
 
 | Paramètre | Obligatoire | Rôle |
 |---|---|---|
-| `id` | oui | identifiant du formulaire bazar |
+| `id` | oui | identifiant du formulaire |
 | `limit` | oui | nombre maximum de fiches |
 | `message_max` | non | message affiché une fois la limite atteinte |
 | `message_count` | non | message affiché tant qu'il reste de la place |
@@ -36,24 +36,25 @@ bazar permet toujours d'ajouter des fiches au-delà.
 
 | Template | Rôle |
 |---|---|
-| `compteur_simple.tpl.html` | affiche uniquement le nombre de fiches trouvées |
-| `photoswipe.twig` | galerie photo |
-| `kanban.twig` | tableau kanban avec glisser-déposer |
+| `compteur_simple` | affiche uniquement le nombre de fiches trouvées |
+| `photoswipe` | galerie photo |
+| `kanban` | tableau kanban avec glisser-déposer |
 
 ### Paramètres du kanban
 
 ```
-{{bazarliste id="X" template="kanban.twig" kanbanfield="bf_statut"}}
+{{entrylist id="X" template="kanban" kanbanfield="bf_statut"}}
 ```
 
 | Paramètre | Obligatoire | Rôle |
 |---|---|---|
 | `kanbanfield` | oui | champ servant à répartir les fiches en colonnes |
 | `kanbanaddpage` | non | page wiki portant le formulaire de saisie |
-| `kanbanPersonField` | non | champ des personnes associées |
-| `nbcol` | non | nombre de colonnes par ligne |
+| `kanbanpersonfield` | non | champ des personnes associées |
+| `columns` | non | nombre de colonnes par ligne |
 | `kanbancolumns` | non | valeurs des colonnes, séparées par des virgules, dans l'ordre voulu |
 | `kanbancolumnslabels` | non | libellés correspondant à `kanbancolumns` |
 
-Sans `kanbancolumnslabels`, et avec `groups=kanbanfield`, les libellés sont repris des
-nœuds du filtre.
+Sans `kanbancolumnslabels`, les colonnes prennent les libellés de la liste du champ.
+
+La galerie `photoswipe` est un modèle dynamique (`dynamic="true"`) : ses miniatures passent par le cache d'images de YesWiki.

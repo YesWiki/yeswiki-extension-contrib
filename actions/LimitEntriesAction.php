@@ -1,50 +1,78 @@
 <?php
 
-use YesWiki\Bazar\Service\EntryManager;
+namespace YesWiki\Contrib\Action;
+
+use YesWiki\Content\Service\EntryManager;
 use YesWiki\Core\YesWikiAction;
+use YesWiki\Kernel\Component\Category;
+use YesWiki\Kernel\Component\Component;
+use YesWiki\Kernel\Component\ProvidesComponents;
+use YesWiki\Kernel\Component\Setting;
+use YesWiki\Kernel\Performable\RegisteredAction;
+use YesWiki\Render\Service\ActionRunner;
 
-class LimitEntriesAction extends YesWikiAction
+/** `{{limitentries id="2" limit="30"}}`: the form's entry form, until it holds that many entries. */
+class LimitEntriesAction extends YesWikiAction implements RegisteredAction, ProvidesComponents
 {
-    public function formatArguments($arg): array
+    public static function performableName(): string
     {
-        $id = $arg['id'] ?? null;
-        if (empty($id)) {
-            throw new Exception('Action limitentries, le paramètre id (numéro du formulaire) est obligatoire');
-        }
-        $limit = (int)$arg['limit'] ?? null;
-        if (empty($limit) || $limit <= 0) {
-            throw new Exception('Action limitentries, le paramètre limit est obligatoire et doit etre supérieur à zéro');
-        }
+        return 'limitentries';
+    }
 
+    public function components(): array
+    {
         return [
-            'id' => $id,
-            'limit' => $limit,
-            'message_max' => $arg['message_max'] ?? 'Nombre maximum de saisies atteint (%{limit}), il n\'est plus possible d\'en ajouter..',
-            'message_count' => $arg['message_count'] ?? 'Nombres de fiches saisies: %{nb} sur %{limit}.',
+            Component::for('limitentries')
+                ->category(Category::Forms)
+                ->label(_t('CONTRIB_LIMITENTRIES_LABEL'))
+                ->description(_t('CONTRIB_LIMITENTRIES_DESCRIPTION'))
+                ->icon('list-numbers')
+                ->settings(
+                    Setting::form('id')->label(_t('CONTRIB_LIMITENTRIES_ID'))->required(),
+                    Setting::number('limit')->label(_t('CONTRIB_LIMITENTRIES_LIMIT'))->required(),
+                    Setting::text('message_max')->label(_t('CONTRIB_LIMITENTRIES_MESSAGE_MAX'))->hint(_t('CONTRIB_LIMITENTRIES_PLACEHOLDERS_HINT')),
+                    Setting::text('message_count')->label(_t('CONTRIB_LIMITENTRIES_MESSAGE_COUNT'))->hint(_t('CONTRIB_LIMITENTRIES_PLACEHOLDERS_HINT')),
+                ),
         ];
     }
 
-    public function run()
+    public function formatArguments($arg): array
     {
-        // dirty hack to be able to use %{limit} syntax in translated strings even if custom string are used
-        $msgCount = $this->arguments['message_count'];
-        if (!empty($msgCount)) {
-            $GLOBALS['translations'][$msgCount] = $msgCount;
-        }
-        $msgMax = $this->arguments['message_max'];
-        if (!empty($msgMax)) {
-            $GLOBALS['translations'][$msgMax] = $msgMax;
-        }
-        $entryManager = $this->getService(EntryManager::class);
-        $nbEntries = count($entryManager->search(['formsIds' => [$this->arguments['id']]]));
+        return [
+            'id' => trim((string)($arg['id'] ?? '')),
+            'limit' => (int)($arg['limit'] ?? 0),
+            'message_max' => (string)($arg['message_max'] ?? _t('CONTRIB_LIMITENTRIES_DEFAULT_MAX')),
+            'message_count' => (string)($arg['message_count'] ?? _t('CONTRIB_LIMITENTRIES_DEFAULT_COUNT')),
+        ];
+    }
 
-        if ($nbEntries >= $this->arguments['limit']) {
-            return '<div class="alert alert-warning">' . _t($msgMax, ['limit' => $this->arguments['limit']]) . '</div>';
-        } else {
-            $output = !empty($msgCount) ? '<div class="alert alert-info">' . _t($msgCount, ['limit' => $this->arguments['limit'], 'nb' => $nbEntries]) . '</div>' : '';
-            $output .= $this->wiki->Format('{{bazar vue="saisir" id="' . $this->arguments['id'] . '" voirmenu="0"}}');
-
-            return $output;
+    public function run(): string
+    {
+        if ($this->arguments['id'] === '') {
+            return $this->alert('danger', 'limitentries : ' . _t('CONTRIB_LIMITENTRIES_ID_REQUIRED'));
         }
+        if ($this->arguments['limit'] <= 0) {
+            return $this->alert('danger', 'limitentries : ' . _t('CONTRIB_LIMITENTRIES_LIMIT_REQUIRED'));
+        }
+
+        $count = count($this->getService(EntryManager::class)->search(['formsIds' => [$this->arguments['id']]]));
+        $placeholders = ['%{limit}' => (string)$this->arguments['limit'], '%{nb}' => (string)$count];
+
+        if ($count >= $this->arguments['limit']) {
+            return $this->alert('warning', strtr($this->arguments['message_max'], $placeholders));
+        }
+
+        $countMessage = $this->arguments['message_count'] === '' ? '' : $this->alert('info', strtr($this->arguments['message_count'], $placeholders));
+
+        return $countMessage . $this->getService(ActionRunner::class)->action('bazar', [
+            'view' => 'saisir',
+            'id' => $this->arguments['id'],
+            'showmenu' => '0',
+        ]);
+    }
+
+    private function alert(string $kind, string $message): string
+    {
+        return '<div class="yw-alert yw-alert--' . $kind . '">' . htmlspecialchars($message) . '</div>';
     }
 }

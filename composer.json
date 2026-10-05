@@ -1,10 +1,22 @@
 {
     "name": "yeswiki/extension-contrib",
     "type": "yeswiki-extension",
-    "description": "Actions et templates proposées et maintenues par la communauté YesWiki.",
+    "description": "Actions and templates shared and maintained by the YesWiki community",
     "license": "AGPL-3.0-or-later",
-    "minimum-stability": "beta",
     "require": {
-        "league/glide": "^4.0"
+        "php": ">=8.3"
+    },
+    "extra": {
+        "yeswiki": {
+            "label": {
+                "fr": "Contributions",
+                "en": "Contributions"
+            },
+            "description": {
+                "fr": "Actions et modèles proposés et maintenus par la communauté YesWiki : sonogramme, limite de fiches, kanban, galerie photo.",
+                "en": "Actions and templates shared by the YesWiki community: sonogram, entry limit, kanban, photo gallery."
+            },
+            "requires-extensions": []
+        }
     }
 }

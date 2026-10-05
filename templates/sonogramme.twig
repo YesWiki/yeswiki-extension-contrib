@@ -1,15 +1,8 @@
-{% if fileExists == false %}
-  <a href="{{ url({ handler: 'upload', tag: tag, params:{ file: args.file }}) }}" class="btn btn-primary">
-    <i class="fa fa-upload icon-upload icon-white"></i>
-    {{ _t('UPLOAD_FILE') }} {{ args.file }}
-  </a>
-{% else %}
-  {{ include_javascript('tools/contrib/javascripts/vendor/peaks.js/peaks.js') }}
-  {{ include_javascript('tools/contrib/presentation/libs/sonogramme.js') }}
-  {{ include_css('tools/contrib/presentation/sonogramme.css') }}
+{{ include_javascript('extensions/contrib/javascripts/vendor/peaks.js/peaks.js') }}
+{{ include_javascript('extensions/contrib/presentation/libs/sonogramme.js') }}
+{{ include_css('extensions/contrib/presentation/sonogramme.css') }}
 
-  <div class="peaks-container yw-sonogramme" data-color="{{ args.color }}" style="--waveform-height: {{ args.height }}px">
-    <div class="overview-container"></div>
-  </div>
-  <audio class="yw-sonogramme-audio" controls src="{{ fullFilename }}">
-{% endif %}
+<div class="yw-sonogramme" data-color="{{ args.color }}" style="--waveform-height: {{ args.height }}px">
+  <div class="yw-sonogramme__overview"></div>
+</div>
+<audio class="yw-sonogramme__audio" controls src="{{ url }}"></audio>

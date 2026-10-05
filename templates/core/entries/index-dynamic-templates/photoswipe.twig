@@ -1,0 +1,23 @@
+{# presentation
+   label: CONTRIB_PRESENTATION_PHOTOSWIPE
+   category: card
+   icon: photo
+   requires: image
+#}
+{% extends "@core/entries/index-dynamic.twig" %}
+{% block assets %}
+  {{ include_css('extensions/contrib/javascripts/vendor/photoswipe/photoswipe.css') }}
+  {{ include_css('extensions/contrib/javascripts/vendor/photoswipe/photoswipe-dynamic-caption-plugin.css') }}
+  {{ include_css('extensions/contrib/styles/photoswipe-gallery.css') }}
+  {{ include_javascript('extensions/contrib/javascripts/photoswipe.component.js', false, true) }}
+{% endblock %}
+
+{% block display_entries %}
+  {% set thumbWidth = (params.imgwidth ?? 600)|number_format(0, '', '') %}
+  {% set thumbHeight = (params.imgheight ?? 400)|number_format(0, '', '') %}
+  <bazar-gallery
+    :width="{{ thumbWidth }}"
+    :height="{{ thumbHeight }}"
+    :token="{{ signedToken("POST api/images/cache/#{thumbWidth}/#{thumbHeight}/fit")|json_encode|e('html_attr') }}">
+  </bazar-gallery>
+{% endblock %}
